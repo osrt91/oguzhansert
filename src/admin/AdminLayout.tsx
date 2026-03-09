@@ -11,6 +11,7 @@ import WhatIdoPage from "./pages/WhatIdoPage";
 import CareerPage from "./pages/CareerPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import TechStackPage from "./pages/TechStackPage";
+import SeoPage from "./pages/SeoPage";
 import "./admin.css";
 
 const AdminLayout = () => {
@@ -68,8 +69,11 @@ const AdminLayout = () => {
         <NavLink to="/admin/techstack" className={({ isActive }) => isActive ? "active" : ""}>
           Tech Stack
         </NavLink>
+        <NavLink to="/admin/seo" className={({ isActive }) => isActive ? "active" : ""}>
+          SEO & Analytics
+        </NavLink>
         <button className="admin-logout" onClick={handleLogout}>
-          Çıkış Yap
+          Logout
         </button>
       </aside>
       <main className="admin-main">
@@ -82,6 +86,7 @@ const AdminLayout = () => {
           <Route path="career" element={<CareerPage />} />
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="techstack" element={<TechStackPage />} />
+          <Route path="seo" element={<SeoPage />} />
         </Routes>
       </main>
     </div>

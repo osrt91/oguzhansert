@@ -20,14 +20,16 @@ export function defaultContent(lang: Lang) {
     twitter_url: "https://twitter.com/oguzhansert",
     instagram_url: "https://instagram.com/oguzhansert",
     resume_url: "#",
-    footer_text: lang === "tr" ? "Oğuzhan Sert tarafından tasarlandı ve geliştirildi" : "Designed and Developed by Oğuzhan Sert",
+    footer_text: lang === "tr"
+      ? "Oğuzhan Sert tarafından tasarlandı ve geliştirildi"
+      : "Designed and Developed by Oguzhan Sert",
   };
 
   const hero: HeroContent = {
     id: "default",
     lang,
     greeting: lang === "tr" ? "Merhaba! Ben" : "Hello! I'm",
-    name_line1: "OĞUZHAN",
+    name_line1: lang === "tr" ? "OĞUZHAN" : "OGUZHAN",
     name_line2: "SERT",
     subtitle_prefix: lang === "tr" ? "Bir" : "A Creative",
     subtitle_role1: lang === "tr" ? "Geliştirici" : "Developer",

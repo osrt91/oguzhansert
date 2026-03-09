@@ -69,3 +69,12 @@ export interface TechStackItem {
   image_url: string;
   sort_order: number;
 }
+
+export interface SeoConfig {
+  id: string;
+  ga_measurement_id: string;
+  meta_pixel_id: string;
+  site_description_tr: string;
+  site_description_en: string;
+  og_image_url: string;
+}
