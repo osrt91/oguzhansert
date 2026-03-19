@@ -433,3 +433,152 @@ NEXT_PUBLIC_GA_ID=<optional>
 | Canonical URLs | Per-page, admin-managed |
 | hreflang | `<link rel="alternate" hreflang="tr"/"en">` on all pages |
 | Redirects | Admin-managed 301/302 redirects via middleware |
+
+---
+
+## Error Handling Strategy
+
+**API error response format** (kismetplastik model):
+```json
+{ "success": false, "error": "Human-readable error message" }
+{ "success": true, "data": { ... }, "message": "Optional success message" }
+```
+
+**Input validation:** Zod schemas for all admin API inputs. Validate before DB write.
+
+**Client-side errors:** Sonner toast notifications in admin panel. No toast library on public site (SSR only).
+
+**API validation pattern:**
+```typescript
+const schema = z.object({ title: z.string().min(1), locale: z.enum(["tr", "en"]) });
+const result = schema.safeParse(body);
+if (!result.success) return NextResponse.json({ success: false, error: result.error.issues[0].message }, { status: 400 });
+```
+
+---
+
+## VPS Resource Management
+
+**Current VPS:** Hostinger KVM 2 (8GB RAM, 4 vCPU, 200GB NVMe)
+
+**Estimated memory footprint:**
+| Service | RAM (est.) |
+|---------|-----------|
+| Traefik | ~50MB |
+| kismetplastik Supabase (8 containers) | ~1.5GB |
+| kismetplastik Next.js (PM2) | ~300MB |
+| oguzhansert Supabase (8 containers) | ~1.5GB |
+| oguzhansert Next.js (PM2) | ~200MB |
+| OS + system | ~500MB |
+| **Total** | **~4GB** |
+
+**Mitigation:**
+- Docker `mem_limit` on each Supabase container (prevent runaway memory)
+- PM2 `max_memory_restart: "300M"` for Next.js processes
+- If RAM is tight: disable Supabase Realtime and Studio containers (not needed for portfolio)
+- Monitor with `htop` and PM2 dashboard
+
+**If VPS cannot handle two full stacks:** Fall back to lightweight mode — shared Supabase instance with separate schema (`oguzhansert.*` tables) instead of full Docker stack. This is a fallback, not the primary plan.
+
+---
+
+## Rollback Plan
+
+**Quick disable (< 1 min):**
+```bash
+# Stop oguzhansert Next.js
+pm2 stop oguzhansert
+
+# Stop oguzhansert Supabase
+cd /opt/oguzhansert-supabase && docker compose down
+
+# Traefik automatically removes routes when containers stop
+```
+
+**Full rollback:**
+```bash
+# Remove PM2 process
+pm2 delete oguzhansert
+
+# Remove Supabase stack and data
+cd /opt/oguzhansert-supabase && docker compose down -v
+
+# Remove Traefik config
+rm /etc/traefik/dynamic/oguzhansert.yml
+
+# Remove Cloudflare DNS records (manual via dashboard or API)
+```
+
+**Deploy script pattern** (like kismetplastik):
+```bash
+bash deploy-oguzhansert.sh "commit message"  # Deploy
+bash deploy-oguzhansert.sh --rollback        # Rollback to previous
+```
+
+---
+
+## Data Migration Plan
+
+**Seed script:** `scripts/seed-data.mjs` — imports existing resume.tsx data into Supabase tables.
+
+**Blog migration:** Existing 7 MDX files in `content/` will be converted to plain Markdown (no custom MDX components needed for portfolio blog). Content inserted into `blog_posts` table via seed script. `@content-collections/mdx` and `@content-collections/next` removed from dependencies after migration.
+
+**Blog rendering:** `react-markdown` + `rehype-pretty-code` (already in deps) for rendering DB content. No MDX runtime needed.
+
+---
+
+## Additional Spec Fixes (from review)
+
+### Schema Improvements
+
+**Locale indexes** on all locale-filtered tables:
+```sql
+CREATE INDEX idx_profile_locale ON profile(locale);
+CREATE INDEX idx_work_experience_locale ON work_experience(locale);
+CREATE INDEX idx_education_locale ON education(locale);
+CREATE INDEX idx_projects_locale ON projects(locale);
+CREATE INDEX idx_blog_posts_published ON blog_posts(published, locale);
+CREATE INDEX idx_blog_posts_slug ON blog_posts(locale, slug);
+CREATE INDEX idx_hackathons_locale ON hackathons(locale);
+CREATE INDEX idx_seo_metadata_page ON seo_metadata(locale, page_slug);
+```
+
+**`updated_at` auto-trigger:**
+```sql
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$$ LANGUAGE plpgsql;
+
+-- Applied to: profile, work_experience, education, projects, blog_posts, hackathons, seo_metadata, site_settings
+```
+
+**Locale CHECK constraint:**
+```sql
+ALTER TABLE profile ADD CONSTRAINT chk_locale CHECK (locale IN ('tr', 'en'));
+-- Same for all locale-bearing tables
+```
+
+**`gallery_images` made locale-aware** (add `locale TEXT` + CHECK constraint for bilingual captions).
+
+**`skills.category`** uses a `category_key TEXT` mapped to i18n JSON translations (e.g., `"backend"` → `messages/tr.json: { "skills.backend": "Arka Uc" }`).
+
+**`work_experience` and `education`** gain `start_date DATE` and `end_date DATE` (nullable) for sortability, keeping `period TEXT` for display.
+
+**`hackathons`** gains `start_date DATE` for reliable chronological sorting.
+
+### Networking & DNS
+
+**www redirect:** `www.oguzhansert.dev` → 301 → `oguzhansert.dev` (bare domain canonical).
+
+**CSP update:** Add `img-src supabase.oguzhansert.dev` and `connect-src supabase.oguzhansert.dev wss://supabase.oguzhansert.dev` to next.config.mjs.
+
+**Bot handling in middleware:** Skip locale redirect for known crawlers (Googlebot, Bingbot, etc.) — let them access any locale path directly. Check `User-Agent` header.
+
+**Package manager:** pnpm (explicit — PM2 ecosystem and deploy scripts use `pnpm build`, `pnpm start`).
+
+### Navigation
+Navbar items managed via `site_settings` with key `navbar_items` and JSONB value per locale.
+
+### Sitemap & Robots
+Assigned to Sub-Project 4 (Frontend Refactor): `src/app/sitemap.ts` and `src/app/robots.ts` fetch from Supabase.
