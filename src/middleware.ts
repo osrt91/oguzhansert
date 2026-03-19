@@ -1,6 +1,6 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const BOTS =
   /googlebot|bingbot|yandex|baidu|duckduckbot|slurp|msnbot|facebookexternalhit|twitterbot|linkedinbot/i;
@@ -10,8 +10,18 @@ const intlMiddleware = createMiddleware(routing);
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip admin routes
-  if (pathname.startsWith("/admin")) {
+  // Protect admin routes (except login page)
+  if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
+    const token = request.cookies.get("admin-token")?.value;
+    if (!token) {
+      const loginUrl = new URL("/admin/login", request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+    return;
+  }
+
+  // Skip admin login page
+  if (pathname === "/admin/login") {
     return;
   }
 
@@ -52,5 +62,6 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|_vercel|admin|.*\\..*).*)"],
+  matcher: [
+    "/((?!api|_next|_vercel|.*\\..*).*)"],
 };
