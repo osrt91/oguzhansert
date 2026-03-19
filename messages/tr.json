@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "Ana Sayfa",
+    "about": "Hakkımda",
+    "projects": "Projeler",
+    "skills": "Yetenekler",
+    "blog": "Blog",
+    "contact": "İletişim",
+    "gallery": "Galeri"
+  },
+  "home": {
+    "hero_description": "Yazılım Geliştirici",
+    "about_title": "Hakkımda",
+    "work_title": "İş Deneyimi",
+    "education_title": "Eğitim",
+    "skills_title": "Yetenekler",
+    "projects_title": "Projeler",
+    "hackathons_title": "Etkinlikler",
+    "contact_title": "İletişim",
+    "contact_description": "Benimle iletişime geçmek ister misiniz? Aşağıdaki bağlantılardan ulaşabilirsiniz.",
+    "view_all": "Tümünü Gör",
+    "view_project": "Projeyi Gör",
+    "source_code": "Kaynak Kod"
+  },
+  "blog": {
+    "title": "Blog",
+    "read_more": "Devamını Oku",
+    "back": "Geri Dön",
+    "published": "Yayınlanma",
+    "min_read": "dk okuma"
+  },
+  "common": {
+    "present": "Devam Ediyor",
+    "loading": "Yükleniyor...",
+    "not_found": "Sayfa bulunamadı",
+    "not_found_description": "Aradığınız sayfa mevcut değil.",
+    "go_home": "Ana Sayfaya Dön",
+    "dark_mode": "Karanlık Mod",
+    "light_mode": "Aydınlık Mod"
+  },
+  "skills": {
+    "frontend": "Ön Yüz",
+    "backend": "Arka Yüz",
+    "devops": "DevOps",
+    "language": "Programlama Dili",
+    "database": "Veritabanı",
+    "other": "Diğer"
+  },
+  "footer": {
+    "rights": "Tüm hakları saklıdır."
+  }
+}

@@ -1,4 +1,7 @@
 import { withContentCollections } from "@content-collections/next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -53,4 +56,4 @@ const nextConfig = {
 };
 
 // withContentCollections must be the outermost plugin
-export default withContentCollections(nextConfig);
+export default withContentCollections(withNextIntl(nextConfig));

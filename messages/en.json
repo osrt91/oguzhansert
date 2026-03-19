@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "projects": "Projects",
+    "skills": "Skills",
+    "blog": "Blog",
+    "contact": "Contact",
+    "gallery": "Gallery"
+  },
+  "home": {
+    "hero_description": "Software Developer",
+    "about_title": "About",
+    "work_title": "Work Experience",
+    "education_title": "Education",
+    "skills_title": "Skills",
+    "projects_title": "Projects",
+    "hackathons_title": "Events",
+    "contact_title": "Contact",
+    "contact_description": "Want to get in touch? Feel free to reach out through the links below.",
+    "view_all": "View All",
+    "view_project": "View Project",
+    "source_code": "Source Code"
+  },
+  "blog": {
+    "title": "Blog",
+    "read_more": "Read More",
+    "back": "Go Back",
+    "published": "Published",
+    "min_read": "min read"
+  },
+  "common": {
+    "present": "Present",
+    "loading": "Loading...",
+    "not_found": "Page not found",
+    "not_found_description": "The page you're looking for doesn't exist.",
+    "go_home": "Go Home",
+    "dark_mode": "Dark Mode",
+    "light_mode": "Light Mode"
+  },
+  "skills": {
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "devops": "DevOps",
+    "language": "Programming Language",
+    "database": "Database",
+    "other": "Other"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  }
+}
