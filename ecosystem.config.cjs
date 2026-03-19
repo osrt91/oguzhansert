@@ -3,11 +3,11 @@ module.exports = {
     {
       name: "oguzhansert",
       script: "node_modules/.bin/next",
-      args: "start -p 3001",
+      args: "start -p 3005",
       cwd: "/opt/oguzhansert",
       env: {
         NODE_ENV: "production",
-        PORT: 3001,
+        PORT: 3005,
       },
       max_memory_restart: "300M",
       instances: 1,
