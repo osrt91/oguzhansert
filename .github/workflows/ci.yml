@@ -39,4 +39,4 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key' }}
           ADMIN_SECRET: "ci-placeholder-admin-secret-32chars!"
           NEXT_PUBLIC_BASE_URL: "https://oguzhansert.dev"
-        run: pnpm build
+        run: pnpm build --webpack
