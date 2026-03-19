@@ -28,14 +28,12 @@ const BLUR_FADE_DELAY = 0.04;
 
 export default async function BlogPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string }>;
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { page: pageParam } = await searchParams;
+  const pageParam = undefined;
 
   // Fetch from Supabase (already sorted by published_at desc)
   const posts = await getBlogPosts(locale);

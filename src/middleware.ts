@@ -17,17 +17,17 @@ export default function middleware(request: NextRequest) {
       const loginUrl = new URL("/admin/login", request.url);
       return NextResponse.redirect(loginUrl);
     }
-    return;
+    return NextResponse.next();
   }
 
   // Skip admin login page
   if (pathname === "/admin/login") {
-    return;
+    return NextResponse.next();
   }
 
   // Skip API routes
   if (pathname.startsWith("/api")) {
-    return;
+    return NextResponse.next();
   }
 
   // Don't redirect bots — let them access any locale directly

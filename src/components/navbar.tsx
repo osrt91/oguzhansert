@@ -24,6 +24,8 @@ const socialIconMap: Record<string, React.ComponentType<React.HTMLAttributes<SVG
   twitter: Icons.x,
   Youtube: Icons.youtube,
   youtube: Icons.youtube,
+  Instagram: Icons.instagram,
+  instagram: Icons.instagram,
   Email: Icons.email,
   email: Icons.email,
 };

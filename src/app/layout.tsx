@@ -2,7 +2,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import { getProfile } from "@/lib/content";
-
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -68,8 +67,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning>
+    <html lang="tr" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${geist.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased relative`}
       >
         {children}

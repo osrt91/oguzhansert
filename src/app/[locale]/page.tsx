@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import ContactSection from "@/components/section/contact-section";
-import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
 import { ArrowUpRight } from "lucide-react";
@@ -16,7 +15,6 @@ import {
   getWorkExperience,
   getEducation,
   getProjects,
-  getHackathons,
 } from "@/lib/content";
 
 export const revalidate = 60;
@@ -32,14 +30,13 @@ export default async function Page({
   setRequestLocale(locale);
 
   // Fetch all data in parallel from Supabase
-  const [profile, skills, work, education, projects, hackathons] =
+  const [profile, skills, work, education, projects] =
     await Promise.all([
       getProfile(locale),
       getSkills(),
       getWorkExperience(locale),
       getEducation(locale),
       getProjects(locale),
-      getHackathons(locale),
     ]);
 
   const name = profile?.name ?? "";
@@ -185,14 +182,6 @@ export default async function Page({
         <section id="projects">
           <BlurFade delay={BLUR_FADE_DELAY * 11}>
             <ProjectsSection projects={projects} />
-          </BlurFade>
-        </section>
-      )}
-
-      {hackathons.length > 0 && (
-        <section id="hackathons">
-          <BlurFade delay={BLUR_FADE_DELAY * 13}>
-            <HackathonsSection hackathons={hackathons} />
           </BlurFade>
         </section>
       )}

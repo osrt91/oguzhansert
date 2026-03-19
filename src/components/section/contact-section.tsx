@@ -9,12 +9,12 @@ interface ContactSectionProps {
 export default function ContactSection({ profile }: ContactSectionProps) {
   // Try to get a social link for the contact CTA
   const socialUrl =
-    profile?.social_links?.X ||
-    profile?.social_links?.x ||
-    profile?.social_links?.Twitter ||
-    profile?.social_links?.twitter ||
     profile?.social_links?.LinkedIn ||
     profile?.social_links?.linkedin ||
+    profile?.social_links?.Instagram ||
+    profile?.social_links?.instagram ||
+    profile?.social_links?.GitHub ||
+    profile?.social_links?.github ||
     "#";
 
   return (
@@ -38,16 +38,16 @@ export default function ContactSection({ profile }: ContactSectionProps) {
           Get in Touch
         </h2>
         <p className="mx-auto max-w-lg text-muted-foreground text-balance">
-          Want to chat? Just shoot me a dm{" "}
+          Sektörel vizyon paylaşımı, teknolojik inovasyonlar ve B2B stratejik iş birlikleri için{" "}
           <Link
             href={socialUrl as string}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            className="text-primary hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
-            with a direct question on twitter
+            LinkedIn üzerinden
           </Link>{" "}
-          and I&apos;ll respond whenever I can. I will ignore all soliciting.
+          iletişime geçebilirsiniz.
         </p>
       </div>
     </div>
