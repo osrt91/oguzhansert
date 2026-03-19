@@ -1,0 +1,37 @@
+http:
+  routers:
+    oguzhansert-web:
+      rule: "Host(`oguzhansert.dev`) || Host(`www.oguzhansert.dev`)"
+      entryPoints:
+        - websecure
+      service: oguzhansert-web
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - www-redirect
+
+    oguzhansert-supabase:
+      rule: "Host(`supabase.oguzhansert.dev`)"
+      entryPoints:
+        - websecure
+      service: oguzhansert-supabase
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    oguzhansert-web:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:3001"
+
+    oguzhansert-supabase:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:8444"
+
+  middlewares:
+    www-redirect:
+      redirectRegex:
+        regex: "^https://www\\.oguzhansert\\.dev/(.*)"
+        replacement: "https://oguzhansert.dev/${1}"
+        permanent: true
