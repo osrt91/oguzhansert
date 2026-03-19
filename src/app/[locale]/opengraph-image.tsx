@@ -1,10 +1,10 @@
- 
+
 import { ImageResponse } from "next/og";
-import { DATA } from "@/data/resume";
+import { getProfile } from "@/lib/content";
 
 export const runtime = "edge";
 
-export const alt = DATA.name;
+export const alt = "Profile";
 export const size = {
     width: 1200,
     height: 630,
@@ -105,11 +105,23 @@ const styles = {
     },
 } as const;
 
-export default async function Image() {
+export default async function Image({
+    params,
+}: {
+    params: Promise<{ locale: string }>;
+}) {
     try {
+        const { locale } = await params;
         const fontData = await getFontData();
-        const imageUrl = DATA.avatarUrl
-            ? new URL(DATA.avatarUrl, DATA.url).toString()
+        const profile = await getProfile(locale);
+
+        const name = profile?.name || "Oguzhan Sert";
+        const description = profile?.description || "";
+        const siteUrl = (profile?.social_links?.website as string) || "https://oguzhansert.dev";
+        const avatarUrl = profile?.avatar_url
+            ? profile.avatar_url.startsWith("http")
+                ? profile.avatar_url
+                : new URL(profile.avatar_url, siteUrl).toString()
             : undefined;
 
         return new ImageResponse(
@@ -117,15 +129,15 @@ export default async function Image() {
                 <div style={styles.outerWrapper}>
                     <div style={styles.middleWrapper}>
                         <div style={styles.wrapper}>
-                            {imageUrl && (
+                            {avatarUrl && (
                                 <div style={styles.imageSection}>
-                                    <img src={imageUrl} alt={DATA.name} style={styles.image} />
+                                    <img src={avatarUrl} alt={name} style={styles.image} />
                                 </div>
                             )}
                             <div style={styles.mainContainer}>
-                                <div style={styles.title}>{DATA.name}</div>
-                                {DATA.description && (
-                                    <div style={styles.description}>{DATA.description}</div>
+                                <div style={styles.title}>{name}</div>
+                                {description && (
+                                    <div style={styles.description}>{description}</div>
                                 )}
                             </div>
                         </div>
@@ -168,5 +180,3 @@ export default async function Image() {
         );
     }
 }
-
-

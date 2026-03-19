@@ -1,28 +1,13 @@
-import { allPosts } from "content-collections";
 import { formatDate } from "@/lib/utils";
-import { DATA } from "@/data/resume";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { MDXContent } from "@content-collections/mdx/react";
-import { mdxComponents } from "@/mdx-components";
 import Link from "next/link";
+import Markdown from "react-markdown";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
+import { getBlogPost, getBlogPosts, getProfile } from "@/lib/content";
 
-function getSortedPosts() {
-  return [...allPosts].sort((a, b) => {
-    if (new Date(a.publishedAt) > new Date(b.publishedAt)) {
-      return -1;
-    }
-    return 1;
-  });
-}
-
-export async function generateStaticParams() {
-  return allPosts.map((post) => ({
-    slug: post._meta.path.replace(/\.mdx$/, ""),
-  }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
@@ -32,45 +17,37 @@ export async function generateMetadata({
     slug: string;
   }>;
 }): Promise<Metadata | undefined> {
-  const { slug } = await params;
-  const post = allPosts.find(
-    (p) => p._meta.path.replace(/\.mdx$/, "") === slug
-  );
+  const { locale, slug } = await params;
+  const [post, profile] = await Promise.all([
+    getBlogPost(locale, slug),
+    getProfile(locale),
+  ]);
 
   if (!post) {
     return undefined;
   }
 
-  const {
-    title,
-    publishedAt: publishedTime,
-    summary: description,
-    image,
-  } = post;
+  const siteUrl = profile?.social_links?.website || "https://oguzhansert.dev";
 
   return {
-    title,
-    description,
+    title: post.title,
+    description: post.summary,
     openGraph: {
-      title,
-      description,
+      title: post.title,
+      description: post.summary,
       type: "article",
-      publishedTime,
-      url: `${DATA.url}/blog/${slug}`,
-      ...(image && {
-        images: [
-          {
-            url: `${DATA.url}${image}`,
-          },
-        ],
+      publishedTime: post.published_at ?? undefined,
+      url: `${siteUrl}/blog/${slug}`,
+      ...(post.cover_image_url && {
+        images: [{ url: post.cover_image_url }],
       }),
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
-      ...(image && {
-        images: [`${DATA.url}${image}`],
+      title: post.title,
+      description: post.summary,
+      ...(post.cover_image_url && {
+        images: [post.cover_image_url],
       }),
     },
   };
@@ -86,40 +63,40 @@ export default async function Blog({
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const sortedPosts = getSortedPosts();
-  const currentIndex = sortedPosts.findIndex(
-    (p) => p._meta.path.replace(/\.mdx$/, "") === slug
-  );
-  const post = sortedPosts[currentIndex];
+
+  const [post, allPosts, profile] = await Promise.all([
+    getBlogPost(locale, slug),
+    getBlogPosts(locale),
+    getProfile(locale),
+  ]);
 
   if (!post) {
     notFound();
   }
 
-  const previousPost =
-    currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+  // Find prev/next posts in the sorted list
+  const currentIndex = allPosts.findIndex((p) => p.slug === slug);
+  const previousPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
   const nextPost =
-    currentIndex < sortedPosts.length - 1
-      ? sortedPosts[currentIndex + 1]
-      : null;
+    currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 
-  const getSlug = (post: (typeof sortedPosts)[0]) =>
-    post._meta.path.replace(/\.mdx$/, "");
+  const siteUrl = profile?.social_links?.website || "https://oguzhansert.dev";
+  const authorName = profile?.name || "Author";
 
   const jsonLdContent = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
-    datePublished: post.publishedAt,
-    dateModified: post.publishedAt,
+    datePublished: post.published_at,
+    dateModified: post.updated_at || post.published_at,
     description: post.summary,
-    image: post.image
-      ? `${DATA.url}${post.image}`
-      : `${DATA.url}/blog/${slug}/opengraph-image`,
-    url: `${DATA.url}/blog/${slug}`,
+    image:
+      post.cover_image_url ||
+      `${siteUrl}/blog/${slug}/opengraph-image`,
+    url: `${siteUrl}/blog/${slug}`,
     author: {
       "@type": "Person",
-      name: DATA.name,
+      name: authorName,
     },
   }).replace(/</g, "\\u003c");
 
@@ -147,7 +124,7 @@ export default async function Blog({
           {post.title}
         </h1>
         <p className="text-sm text-muted-foreground">
-          {formatDate(post.publishedAt)}
+          {post.published_at ? formatDate(post.published_at) : ""}
         </p>
       </div>
       <div className="my-6 flex w-full items-center">
@@ -162,14 +139,14 @@ export default async function Blog({
         />
       </div>
       <article className="prose max-w-full text-pretty font-sans leading-relaxed text-muted-foreground dark:prose-invert">
-        <MDXContent code={post.mdx} components={mdxComponents} />
+        <Markdown>{post.content}</Markdown>
       </article>
 
       <nav className="mt-12 pt-8 max-w-2xl">
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           {previousPost ? (
             <Link
-              href={`/blog/${getSlug(previousPost)}`}
+              href={`/blog/${previousPost.slug}`}
               className="group flex-1 flex flex-col gap-1 p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors"
             >
               <span className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -186,7 +163,7 @@ export default async function Blog({
 
           {nextPost ? (
             <Link
-              href={`/blog/${getSlug(nextPost)}`}
+              href={`/blog/${nextPost.slug}`}
               className="group flex-1 flex flex-col gap-1 p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors text-right"
             >
               <span className="flex items-center justify-end gap-1 text-xs text-muted-foreground">

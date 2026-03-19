@@ -1,6 +1,6 @@
- 
+
 import { ImageResponse } from "next/og";
-import { DATA } from "@/data/resume";
+import { getProfile } from "@/lib/content";
 
 export const runtime = "edge";
 
@@ -105,13 +105,23 @@ const styles = {
     },
 } as const;
 
-export default async function Image() {
+export default async function Image({
+    params,
+}: {
+    params: Promise<{ locale: string }>;
+}) {
     try {
+        const { locale } = await params;
         const fontData = await getFontData();
+        const profile = await getProfile(locale);
+
         const title = "Blog";
         const description = "Thoughts on software development, life, and more.";
-        const imageUrl = DATA.avatarUrl
-            ? new URL(DATA.avatarUrl, DATA.url).toString()
+        const siteUrl = (profile?.social_links?.website as string) || "https://oguzhansert.dev";
+        const avatarUrl = profile?.avatar_url
+            ? profile.avatar_url.startsWith("http")
+                ? profile.avatar_url
+                : new URL(profile.avatar_url, siteUrl).toString()
             : undefined;
 
         return new ImageResponse(
@@ -119,9 +129,9 @@ export default async function Image() {
                 <div style={styles.outerWrapper}>
                     <div style={styles.middleWrapper}>
                         <div style={styles.wrapper}>
-                            {imageUrl && (
+                            {avatarUrl && (
                                 <div style={styles.imageSection}>
-                                    <img src={imageUrl} alt="Blog" style={styles.image} />
+                                    <img src={avatarUrl} alt="Blog" style={styles.image} />
                                 </div>
                             )}
                             <div style={styles.mainContainer}>
@@ -170,5 +180,3 @@ export default async function Image() {
         );
     }
 }
-
-

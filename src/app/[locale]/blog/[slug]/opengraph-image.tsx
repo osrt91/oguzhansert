@@ -1,8 +1,7 @@
- 
+
 
 import { ImageResponse } from "next/og";
-import { allPosts } from "content-collections";
-import { DATA } from "@/data/resume";
+import { getBlogPost, getProfile } from "@/lib/content";
 
 export const runtime = "edge";
 
@@ -124,14 +123,22 @@ const styles = {
 export default async function Image({
     params,
 }: {
-    params: Promise<{ slug: string }>;
+    params: Promise<{ locale: string; slug: string }>;
 }) {
     try {
         const fontData = await getFontData();
-        const { slug } = await params;
-        const post = allPosts.find((p) => p._meta.path.replace(/\.mdx$/, "") === slug);
-        const imageUrl = DATA.avatarUrl
-            ? new URL(DATA.avatarUrl, DATA.url).toString()
+        const { locale, slug } = await params;
+
+        const [post, profile] = await Promise.all([
+            getBlogPost(locale, slug),
+            getProfile(locale),
+        ]);
+
+        const siteUrl = (profile?.social_links?.website as string) || "https://oguzhansert.dev";
+        const avatarUrl = profile?.avatar_url
+            ? profile.avatar_url.startsWith("http")
+                ? profile.avatar_url
+                : new URL(profile.avatar_url, siteUrl).toString()
             : undefined;
 
         if (!post) {
@@ -140,9 +147,9 @@ export default async function Image({
                     <div style={styles.outerWrapper}>
                         <div style={styles.middleWrapper}>
                             <div style={styles.wrapper}>
-                                {imageUrl && (
+                                {avatarUrl && (
                                     <div style={styles.imageSection}>
-                                        <img src={imageUrl} alt="Blog Post" style={styles.image} />
+                                        <img src={avatarUrl} alt="Blog Post" style={styles.image} />
                                     </div>
                                 )}
                                 <div style={styles.mainContainer}>
@@ -170,8 +177,8 @@ export default async function Image({
 
         const title = post.title;
         const description = post.summary || "";
-        const publishedDate = post.publishedAt
-            ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+        const publishedDate = post.published_at
+            ? new Date(post.published_at).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -184,9 +191,9 @@ export default async function Image({
                 <div style={styles.outerWrapper}>
                     <div style={styles.middleWrapper}>
                         <div style={styles.wrapper}>
-                            {imageUrl && (
+                            {avatarUrl && (
                                 <div style={styles.imageSection}>
-                                    <img src={imageUrl} alt={title} style={styles.image} />
+                                    <img src={avatarUrl} alt={title} style={styles.image} />
                                 </div>
                             )}
                             <div style={styles.mainContainer}>
@@ -236,5 +243,3 @@ export default async function Image({
         );
     }
 }
-
-

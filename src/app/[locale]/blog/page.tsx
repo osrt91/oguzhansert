@@ -1,10 +1,13 @@
 import BlurFade from "@/components/magicui/blur-fade";
-import { allPosts } from "content-collections";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { paginate, normalizePage } from "@/lib/pagination";
 import { ChevronRight } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
+import { getBlogPosts } from "@/lib/content";
+import { formatDate } from "@/lib/utils";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -34,17 +37,12 @@ export default async function BlogPage({
   setRequestLocale(locale);
   const { page: pageParam } = await searchParams;
 
-  const posts = allPosts;
-  const sortedPosts = [...posts].sort((a, b) => {
-    if (new Date(a.publishedAt) > new Date(b.publishedAt)) {
-      return -1;
-    }
-    return 1;
-  });
+  // Fetch from Supabase (already sorted by published_at desc)
+  const posts = await getBlogPosts(locale);
 
-  const totalPages = Math.ceil(sortedPosts.length / PAGE_SIZE);
-  const currentPage = normalizePage(pageParam, totalPages);
-  const { items: paginatedPosts, pagination } = paginate(sortedPosts, {
+  const totalPages = Math.ceil(posts.length / PAGE_SIZE);
+  const currentPage = normalizePage(pageParam, Math.max(totalPages, 1));
+  const { items: paginatedPosts, pagination } = paginate(posts, {
     page: currentPage,
     pageSize: PAGE_SIZE,
   });
@@ -55,7 +53,7 @@ export default async function BlogPage({
         <h1 className="text-2xl font-semibold tracking-tight mb-2">
           Blog{" "}
           <span className="ml-1 bg-card border border-border rounded-md px-2 py-1 text-muted-foreground text-sm">
-            {sortedPosts.length} posts
+            {posts.length} posts
           </span>
         </h1>
         <p className="text-sm text-muted-foreground mb-8">
@@ -68,17 +66,16 @@ export default async function BlogPage({
           <BlurFade delay={BLUR_FADE_DELAY * 2}>
             <div className="flex flex-col gap-5">
               {paginatedPosts.map((post, id) => {
-                const slug = post._meta.path.replace(/\.mdx$/, "");
                 const indexNumber =
                   (pagination.page - 1) * PAGE_SIZE + id + 1;
                 return (
                   <BlurFade
                     delay={BLUR_FADE_DELAY * 3 + id * 0.05}
-                    key={slug}
+                    key={post.slug}
                   >
                     <Link
                       className="flex items-start gap-x-2 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                      href={`/blog/${slug}`}
+                      href={`/blog/${post.slug}`}
                     >
                       <span className="text-xs font-mono tabular-nums font-medium mt-[5px]">
                         {String(indexNumber).padStart(2, "0")}.
@@ -94,7 +91,9 @@ export default async function BlogPage({
                           </span>
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {post.publishedAt}
+                          {post.published_at
+                            ? formatDate(post.published_at)
+                            : ""}
                         </p>
                       </div>
                     </Link>
