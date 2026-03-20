@@ -6,33 +6,49 @@
     "skills": "Skills",
     "blog": "Blog",
     "contact": "Contact",
-    "gallery": "Gallery"
+    "gallery": "Gallery",
+    "language": "Language",
+    "theme": "Theme"
   },
   "home": {
-    "hero_description": "Software Developer",
+    "hero_greeting": "Hi, I'm {firstName}",
+    "hero_greeting_fallback": "Welcome",
     "about_title": "About",
     "work_title": "My Brands",
     "education_title": "Education",
     "skills_title": "Skills",
     "projects_title": "Projects",
+    "projects_subtitle": "Check out my latest work",
+    "projects_description": "I've built various projects from SaaS platforms to e-commerce infrastructures, B2B solutions to digital products.",
     "contact_title": "Contact",
-    "contact_description": "Want to get in touch? Feel free to reach out through the links below.",
+    "contact_heading": "Get in Touch",
+    "contact_description": "For industry vision sharing, technological innovations and B2B strategic collaborations,",
+    "contact_link_text": "reach out via LinkedIn",
+    "contact_suffix": "",
     "view_all": "View All",
     "view_project": "View Project",
-    "source_code": "Source Code"
+    "source_code": "Source Code",
+    "website": "Website",
+    "source": "Source"
   },
   "blog": {
     "title": "Blog",
+    "description": "My thoughts on software development, technology and entrepreneurship.",
     "read_more": "Read More",
-    "back": "Go Back",
+    "back": "Back to Blog",
     "published": "Published",
-    "min_read": "min read"
+    "min_read": "min read",
+    "no_posts": "No blog posts yet. Check back soon!",
+    "previous": "Previous",
+    "next": "Next",
+    "page_info": "Page {page} of {total}",
+    "posts_count": "{count} posts"
   },
   "common": {
     "present": "Present",
     "loading": "Loading...",
-    "not_found": "Page not found",
-    "not_found_description": "The page you're looking for doesn't exist.",
+    "not_found": "Page Not Found",
+    "not_found_description": "The page you're looking for doesn't exist or may have been moved.",
     "go_home": "Go Home",
     "dark_mode": "Dark Mode",
     "light_mode": "Light Mode"

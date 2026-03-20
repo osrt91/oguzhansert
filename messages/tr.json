@@ -6,33 +6,49 @@
     "skills": "Yetenekler",
     "blog": "Blog",
     "contact": "İletişim",
-    "gallery": "Galeri"
+    "gallery": "Galeri",
+    "language": "Dil",
+    "theme": "Tema"
   },
   "home": {
-    "hero_description": "Yazılım Geliştirici",
+    "hero_greeting": "Merhaba, ben {firstName}",
+    "hero_greeting_fallback": "Hoş Geldiniz",
     "about_title": "Hakkımda",
     "work_title": "Markalarım",
     "education_title": "Eğitim",
     "skills_title": "Yetenekler",
     "projects_title": "Projeler",
+    "projects_subtitle": "Son projelerime göz atın",
+    "projects_description": "SaaS platformlarından e-ticaret altyapılarına, B2B çözümlerden dijital ürünlere kadar çeşitli projeler geliştirdim.",
     "contact_title": "İletişim",
-    "contact_description": "Benimle iletişime geçmek ister misiniz? Aşağıdaki bağlantılardan ulaşabilirsiniz.",
+    "contact_heading": "İletişime Geçin",
+    "contact_description": "Sektörel vizyon paylaşımı, teknolojik inovasyonlar ve B2B stratejik iş birlikleri için",
+    "contact_link_text": "LinkedIn üzerinden",
+    "contact_suffix": "iletişime geçebilirsiniz.",
     "view_all": "Tümünü Gör",
     "view_project": "Projeyi Gör",
-    "source_code": "Kaynak Kod"
+    "source_code": "Kaynak Kod",
+    "website": "Web Sitesi",
+    "source": "Kaynak"
   },
   "blog": {
     "title": "Blog",
+    "description": "Yazılım geliştirme, teknoloji ve girişimcilik üzerine düşüncelerim.",
     "read_more": "Devamını Oku",
-    "back": "Geri Dön",
+    "back": "Blog'a Dön",
     "published": "Yayınlanma",
-    "min_read": "dk okuma"
+    "min_read": "dk okuma",
+    "no_posts": "Henüz blog yazısı yok. Yakında tekrar kontrol edin!",
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "page_info": "Sayfa {page} / {total}",
+    "posts_count": "{count} yazı"
   },
   "common": {
     "present": "Devam Ediyor",
     "loading": "Yükleniyor...",
-    "not_found": "Sayfa bulunamadı",
-    "not_found_description": "Aradığınız sayfa mevcut değil.",
+    "not_found": "Sayfa Bulunamadı",
+    "not_found_description": "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
     "go_home": "Ana Sayfaya Dön",
     "dark_mode": "Karanlık Mod",
     "light_mode": "Aydınlık Mod"

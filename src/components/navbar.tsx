@@ -10,6 +10,7 @@ import {
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Icons } from "@/components/icons";
 import { HomeIcon, NotebookIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { Profile } from "@/types/database";
 
 // Icon mapping for social links stored in the database
@@ -41,6 +42,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ profile }: NavbarProps) {
+  const t = useTranslations("nav");
   // Build social links from profile data
   const socialLinks = profile?.social_links ?? {};
 
@@ -126,7 +128,7 @@ export default function Navbar({ profile }: NavbarProps) {
             sideOffset={8}
             className="rounded-xl bg-primary text-primary-foreground px-4 py-2 text-sm shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]"
           >
-            <p>Language</p>
+            <p>{t("language")}</p>
             <TooltipArrow className="fill-primary" />
           </TooltipContent>
         </Tooltip>
@@ -141,7 +143,7 @@ export default function Navbar({ profile }: NavbarProps) {
             sideOffset={8}
             className="rounded-xl bg-primary text-primary-foreground px-4 py-2 text-sm shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]"
           >
-            <p>Theme</p>
+            <p>{t("theme")}</p>
             <TooltipArrow className="fill-primary" />
           </TooltipContent>
         </Tooltip>

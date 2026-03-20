@@ -30,7 +30,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
       size="icon"
       className={cn("text-xs font-semibold", className)}
       onClick={handleSwitch}
-      title={nextLocale === "en" ? "Switch to English" : "Turkceye Gec"}
+      title={nextLocale === "en" ? "Switch to English" : "Türkçeye Geç"}
     >
       {localeLabels[nextLocale]}
     </Button>

@@ -8,7 +8,7 @@ import ContactSection from "@/components/section/contact-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
 import { ArrowUpRight } from "lucide-react";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import {
   getProfile,
   getSkills,
@@ -28,6 +28,7 @@ export default async function Page({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("home");
 
   // Fetch all data in parallel from Supabase
   const [profile, skills, work, education, projects] =
@@ -56,7 +57,7 @@ export default async function Page({
                 delay={BLUR_FADE_DELAY}
                 className="text-3xl font-semibold tracking-tighter sm:text-4xl lg:text-5xl"
                 yOffset={8}
-                text={firstName ? `Hi, I'm ${firstName}` : "Welcome"}
+                text={firstName ? t("hero_greeting", { firstName }) : t("hero_greeting_fallback")}
               />
               <BlurFadeText
                 className="text-muted-foreground max-w-[600px] md:text-lg lg:text-xl"
@@ -78,7 +79,7 @@ export default async function Page({
         <section id="about">
           <div className="flex min-h-0 flex-col gap-y-4">
             <BlurFade delay={BLUR_FADE_DELAY * 3}>
-              <h2 className="text-xl font-bold">About</h2>
+              <h2 className="text-xl font-bold">{t("about_title")}</h2>
             </BlurFade>
             <BlurFade delay={BLUR_FADE_DELAY * 4}>
               <div className="prose max-w-full text-pretty font-sans leading-relaxed text-muted-foreground dark:prose-invert">
@@ -93,7 +94,7 @@ export default async function Page({
         <section id="work">
           <div className="flex min-h-0 flex-col gap-y-6">
             <BlurFade delay={BLUR_FADE_DELAY * 5}>
-              <h2 className="text-xl font-bold">Work Experience</h2>
+              <h2 className="text-xl font-bold">{t("work_title")}</h2>
             </BlurFade>
             <BlurFade delay={BLUR_FADE_DELAY * 6}>
               <WorkSection work={work} />
@@ -106,7 +107,7 @@ export default async function Page({
         <section id="education">
           <div className="flex min-h-0 flex-col gap-y-6">
             <BlurFade delay={BLUR_FADE_DELAY * 7}>
-              <h2 className="text-xl font-bold">Education</h2>
+              <h2 className="text-xl font-bold">{t("education_title")}</h2>
             </BlurFade>
             <div className="flex flex-col gap-8">
               {education.map((edu, index) => (
@@ -158,7 +159,7 @@ export default async function Page({
         <section id="skills">
           <div className="flex min-h-0 flex-col gap-y-4">
             <BlurFade delay={BLUR_FADE_DELAY * 9}>
-              <h2 className="text-xl font-bold">Skills</h2>
+              <h2 className="text-xl font-bold">{t("skills_title")}</h2>
             </BlurFade>
             <div className="flex flex-wrap gap-2">
               {skills.map((skill, id) => (
