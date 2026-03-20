@@ -16,7 +16,7 @@ import {
   getEducation,
   getProjects,
 } from "@/lib/content";
-import { DATA } from "@/data/resume";
+import { DATA, getLocalizedData } from "@/data/resume";
 
 export const revalidate = 60;
 
@@ -42,11 +42,12 @@ export default async function Page({
     ]);
 
   // Fallback to resume.tsx data when Supabase is not connected
-  const name = profile?.name ?? DATA.name;
+  const fallback = getLocalizedData(locale);
+  const name = profile?.name ?? fallback.name;
   const firstName = name.split(" ")[0] || "";
   const initials = profile?.initials ?? DATA.initials;
-  const description = profile?.description ?? DATA.description;
-  const summary = profile?.summary ?? DATA.summary;
+  const description = profile?.description ?? fallback.description;
+  const summary = profile?.summary ?? fallback.summary;
   const avatarUrl = profile?.avatar_url ?? DATA.avatarUrl;
 
   // Fallback skills from resume.tsx

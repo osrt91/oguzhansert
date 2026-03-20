@@ -12,16 +12,34 @@ import { Kubernetes } from "@/components/ui/svgs/kubernetes";
 import { Java } from "@/components/ui/svgs/java";
 import { Csharp } from "@/components/ui/svgs/csharp";
 
+const DATA_TR = {
+  name: "Oğuzhan Sert",
+  description:
+    "Teknoloji Girişimcisi & Yazılım Geliştirici | SaaS, E-Ticaret ve B2B Çözümleri | Kozmetik Ambalaj Üretimi",
+  summary:
+    "Geleneksel \"yazılımcı\" tanımının ötesinde, kendi dijital ekosistemlerini sıfırdan inşa eden ve yöneten bir ürün mimarıyım. Sadece kod yazmıyor; uçtan uca geliştirdiğim web teknolojilerini kullanarak B2B üretim hatlarından, oyunlaştırılmış SaaS platformlarına ve özel altyapılı e-ticaret sistemlerine kadar farklı sektörlerde sürdürülebilir iş modelleri kuruyorum.",
+};
+
+const DATA_EN = {
+  name: "Oguzhan Sert",
+  description:
+    "Tech Entrepreneur & Software Developer | SaaS, E-Commerce & B2B Solutions | Cosmetic Packaging Manufacturing",
+  summary:
+    "Beyond the traditional \"developer\" label, I'm a product architect who builds and manages entire digital ecosystems from scratch. I don't just write code — I create sustainable business models across different industries, from B2B production lines and gamified SaaS platforms to custom-built e-commerce systems, using end-to-end web technologies.",
+};
+
+export function getLocalizedData(locale: string) {
+  return locale === "en" ? DATA_EN : DATA_TR;
+}
+
 export const DATA = {
   name: "Oğuzhan Sert",
   initials: "OS",
   url: "https://oguzhansert.dev",
   location: "İstanbul",
   locationLink: "https://www.google.com/maps/place/istanbul",
-  description:
-    "Teknoloji Girişimcisi & Yazılım Geliştirici | SaaS, E-Ticaret ve B2B Çözümleri | Kozmetik Ambalaj Üretimi",
-  summary:
-    "Geleneksel \"yazılımcı\" tanımının ötesinde, kendi dijital ekosistemlerini sıfırdan inşa eden ve yöneten bir ürün mimarıyım. Sadece kod yazmıyor; uçtan uca geliştirdiğim web teknolojilerini kullanarak B2B üretim hatlarından, oyunlaştırılmış SaaS platformlarına ve özel altyapılı e-ticaret sistemlerine kadar farklı sektörlerde sürdürülebilir iş modelleri kuruyorum.",
+  description: DATA_TR.description,
+  summary: DATA_TR.summary,
   avatarUrl: "/me.png",
   skills: [
     { name: "React", icon: ReactLight },
