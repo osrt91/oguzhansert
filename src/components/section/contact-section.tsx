@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
 import { useTranslations } from "next-intl";

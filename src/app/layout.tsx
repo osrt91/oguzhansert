@@ -6,12 +6,14 @@ const geist = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
   weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-mono",
+  display: "swap",
 });
 
 const SITE_URL = "https://oguzhansert.dev";
@@ -53,10 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       title: name,
       card: "summary_large_image",
-    },
-    verification: {
-      google: "",
-      yandex: "",
+      description,
     },
   };
 }

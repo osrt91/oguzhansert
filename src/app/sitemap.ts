@@ -9,11 +9,6 @@ const locales = ["tr", "en"] as const;
 const staticPages: Record<string, Record<string, string>> = {
   "/": { tr: "/tr", en: "/en" },
   "/blog": { tr: "/tr/blog", en: "/en/blog" },
-  "/hakkimda": { tr: "/tr/hakkimda", en: "/en/about" },
-  "/projeler": { tr: "/tr/projeler", en: "/en/projects" },
-  "/yetenekler": { tr: "/tr/yetenekler", en: "/en/skills" },
-  "/iletisim": { tr: "/tr/iletisim", en: "/en/contact" },
-  "/galeri": { tr: "/tr/galeri", en: "/en/gallery" },
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

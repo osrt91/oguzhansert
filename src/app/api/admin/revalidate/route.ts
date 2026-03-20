@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     for (const path of paths) {
-      if (typeof path === "string") {
+      if (typeof path === "string" && /^\/[\w\/-]*$/.test(path)) {
         revalidatePath(path);
       }
     }

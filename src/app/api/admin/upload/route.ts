@@ -12,6 +12,8 @@ const IMAGE_TYPES = [
 const DOC_TYPES = ["application/pdf"];
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_DOC_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_BUCKETS = ["avatars", "logos", "projects", "blog", "gallery", "documents", "site", "uploads"];
+const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "avif", "svg", "pdf"];
 
 export async function POST(request: NextRequest) {
   const authError = checkAuth(request);
@@ -24,6 +26,13 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     const bucket = (formData.get("bucket") as string) || "uploads";
+
+    if (!ALLOWED_BUCKETS.includes(bucket)) {
+      return NextResponse.json(
+        { success: false, error: "Geçersiz depolama alanı." },
+        { status: 400 }
+      );
+    }
 
     if (!file) {
       return NextResponse.json(
@@ -59,8 +68,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const ext = (file.name.split(".").pop() || "").toLowerCase();
+    if (!ext || !ALLOWED_EXTENSIONS.includes(ext)) {
+      return NextResponse.json(
+        { success: false, error: `Desteklenmeyen dosya uzantısı: .${ext}` },
+        { status: 400 }
+      );
+    }
+
     const supabase = getSupabaseAdmin();
-    const ext = file.name.split(".").pop() || "bin";
     const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     const filePath = `admin/${fileName}`;
 
