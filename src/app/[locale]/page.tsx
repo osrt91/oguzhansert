@@ -16,6 +16,7 @@ import {
   getEducation,
   getProjects,
 } from "@/lib/content";
+import { DATA } from "@/data/resume";
 
 export const revalidate = 60;
 
@@ -40,12 +41,24 @@ export default async function Page({
       getProjects(locale),
     ]);
 
-  const name = profile?.name ?? "";
+  // Fallback to resume.tsx data when Supabase is not connected
+  const name = profile?.name ?? DATA.name;
   const firstName = name.split(" ")[0] || "";
-  const initials = profile?.initials ?? "";
-  const description = profile?.description ?? "";
-  const summary = profile?.summary ?? "";
-  const avatarUrl = profile?.avatar_url ?? "/me.png";
+  const initials = profile?.initials ?? DATA.initials;
+  const description = profile?.description ?? DATA.description;
+  const summary = profile?.summary ?? DATA.summary;
+  const avatarUrl = profile?.avatar_url ?? DATA.avatarUrl;
+
+  // Fallback skills from resume.tsx
+  const displaySkills = skills.length > 0 ? skills : DATA.skills.map((s, i) => ({
+    id: String(i),
+    name: s.name,
+    icon_name: null,
+    category: null,
+    sort_order: i,
+    visible: true,
+    created_at: new Date().toISOString(),
+  }));
 
   return (
     <main className="min-h-dvh flex flex-col gap-14 relative">
@@ -155,14 +168,14 @@ export default async function Page({
         </section>
       )}
 
-      {skills.length > 0 && (
+      {displaySkills.length > 0 && (
         <section id="skills">
           <div className="flex min-h-0 flex-col gap-y-4">
             <BlurFade delay={BLUR_FADE_DELAY * 9}>
               <h2 className="text-xl font-bold">{t("skills_title")}</h2>
             </BlurFade>
             <div className="flex flex-wrap gap-2">
-              {skills.map((skill, id) => (
+              {displaySkills.map((skill, id) => (
                 <BlurFade
                   key={skill.id || skill.name}
                   delay={BLUR_FADE_DELAY * 10 + id * 0.05}
@@ -189,7 +202,13 @@ export default async function Page({
 
       <section id="contact">
         <BlurFade delay={BLUR_FADE_DELAY * 16}>
-          <ContactSection profile={profile} />
+          <ContactSection profile={profile ?? {
+            social_links: {
+              GitHub: DATA.contact.social.GitHub.url,
+              LinkedIn: DATA.contact.social.LinkedIn.url,
+              Instagram: DATA.contact.social.Instagram.url,
+            },
+          } as never} />
         </BlurFade>
       </section>
     </main>

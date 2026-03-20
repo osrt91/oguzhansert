@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
 import { getProfile } from "@/lib/content";
+import { DATA } from "@/data/resume";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -46,7 +47,13 @@ export default async function LocaleLayout({
           <div className="relative z-10 max-w-2xl mx-auto py-12 pb-24 sm:py-24 px-6">
             {children}
           </div>
-          <Navbar profile={profile} />
+          <Navbar profile={profile ?? {
+            social_links: {
+              GitHub: DATA.contact.social.GitHub.url,
+              LinkedIn: DATA.contact.social.LinkedIn.url,
+              Instagram: DATA.contact.social.Instagram.url,
+            },
+          } as never} />
         </TooltipProvider>
       </ThemeProvider>
     </NextIntlClientProvider>
